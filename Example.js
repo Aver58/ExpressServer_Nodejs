@@ -137,93 +137,97 @@ fs.writeFile('input.txt', '我是通过写入的文件内容！',  function(err)
 //#endregion
 
 //#region Server
-// var http = require('http');
+var http = require('http');
 
-// http.createServer(function (request, response) {
+http.createServer(function (request, response) {
 
-//     // 发送 HTTP 头部 
-//     // HTTP 状态值: 200 : OK
-//     // 内容类型: text/plain
-//     response.writeHead(200, { 'Content-Type': 'text/plain' });
+    // 发送 HTTP 头部 
+    // HTTP 状态值: 200 : OK
+    // 内容类型: text/plain
+    response.writeHead(200, { 'Content-Type': 'text/plain' });
 
-//     // 发送响应数据 "Hello World"
-//     response.end('Hello World\n');
-// }).listen(8888);
+    // 发送响应数据 "Hello World"
+    response.end('Hello World\n');
+}).listen(8888);
 
-// // 终端打印如下信息
-// var url = require('url');
-// console.log(url.parse('http://user:pass@host.com:8080/path/to/file?query=string#hash'));
-
-
-
-// 'use strict';
-// var path = require('path');
-
-// // 解析当前目录:
-// var workDir = path.resolve('.'); // '/Users/michael'
-
-// // 组合完整的文件路径:当前目录+'pub'+'index.html':
-// var filePath = path.join(workDir, 'pub', 'index.html');
-// // '/Users/michael/pub/index.html'
-
-// 'use strict';
-// var
-//     fs = require('fs'),
-//     url = require('url'),
-//     http = require('http');
-
-// // 从命令行参数获取root目录，默认是当前目录:
-// var root = path.resolve(process.argv[2] || '.');
-
-// console.log('Static root dir: ' + root);
-
-// // 创建服务器:
-
-// // 取得当前根目录
-// let rootPath = path.resolve('.');
-
-// // 开启服务器
-// let server = http.createServer(function (request, response) {
-//     console.log(`${request.url}`);
-
-//     // 通过url与根目录拼接获取文件地址
-//     let filePath = path.join(rootPath, url.parse(request.url).pathname);
-
-//     // 检查文件状态
-//     fs.stat(filepath, function (err, stats) {
-//         if (!err && stats.isFile()) {
-//             // 没有出错并且文件存在:
-//             console.log('200 ' + request.url);
-//             // 发送200响应:
-//             response.writeHead(200);
-//             // 将文件流导向response:
-//             fs.createReadStream(filepath).pipe(response);
-//             //没有必要手动读取文件内容。
-//             // 由于response对象本身是一个Writable Stream，
-//             // 直接用pipe()方法就实现了自动读取文件内容并输出到HTTP响应。
-//         } else {
-//             showError(err, response);
-//         }
-//     });
-// });
+// 终端打印如下信息
+var url = require('url');
+console.log(url.parse('http://user:pass@host.com:8080/path/to/file?query=string#hash'));
 
 
-// // 显示网页
-// let showHTML = function (filePath, response) {
-//     response.writeHead(200);
-//     fs.createReadStream(filePath).pipe(response);
-// };
 
-// // 显示错误
-// let showError = function (err, response) {
-//      // 出错了或者文件不存在:
-//      console.log(err);
-//      // 发送404响应:
-//      response.writeHead(404);
-//      response.end('404 Not Found');
-// };
-// server.listen(8080);
+'use strict';
+var path = require('path');
 
+// 解析当前目录:
+var workDir = path.resolve('.'); // '/Users/michael'
+
+// 组合完整的文件路径:当前目录+'pub'+'index.html':
+var filePath = path.join(workDir, 'pub', 'index.html');
+// '/Users/michael/pub/index.html'
+
+'use strict';
+var
+    fs = require('fs'),
+    url = require('url'),
+    http = require('http');
+
+// 从命令行参数获取root目录，默认是当前目录:
+var root = path.resolve(process.argv[2] || '.');
+
+console.log('Static root dir: ' + root);
+
+// 创建服务器:
+
+// 取得当前根目录
+let rootPath = path.resolve('.');
+
+// 开启服务器
+let server = http.createServer(function (request, response) {
+    console.log(`${request.url}`);
+
+    // 通过url与根目录拼接获取文件地址
+    let filePath = path.join(rootPath, url.parse(request.url).pathname);
+
+    // 检查文件状态
+    fs.stat(filepath, function (err, stats) {
+        if (!err && stats.isFile()) {
+            // 没有出错并且文件存在:
+            console.log('200 ' + request.url);
+            // 发送200响应:
+            response.writeHead(200);
+            // 将文件流导向response:
+            fs.createReadStream(filepath).pipe(response);
+            //没有必要手动读取文件内容。
+            // 由于response对象本身是一个Writable Stream，
+            // 直接用pipe()方法就实现了自动读取文件内容并输出到HTTP响应。
+        } else {
+            showError(err, response);
+        }
+    });
+});
+
+
+// 显示网页
+let showHTML = function (filePath, response) {
+    response.writeHead(200);
+    fs.createReadStream(filePath).pipe(response);
+};
+
+// 显示错误
+let showError = function (err, response) {
+     // 出错了或者文件不存在:
+     console.log(err);
+     // 发送404响应:
+     response.writeHead(404);
+     response.end('404 Not Found');
+};
+server.listen(8080);
+
+
+
+
+//第二段
 var http = require('http');
 var url = require('url');
 var util = require('util');
@@ -241,7 +245,23 @@ http.createServer(function(req, res){
     res.writeHead(200, {'Content-Type': 'text/plain; charset=utf-8'});
     //获取GET请求内容
     //由于GET请求直接被嵌入在路径中，URL是完整的请求路径，包括了?后面的部分，因此你可以手动解析后面的内容作为GET请求的参数。
-    // res.end(util.inspect(url.parse(req.url, true)));
+    res.end(util.inspect(url.parse(req.url, true)));
+    //在浏览器中访问 http://localhost:3000/user?name=菜鸟教程&url=www.runoob.com 然后查看返回结果:
+    
+    // 解析 url 参数
+    var params = url.parse(req.url, true).query;
+    res.write("网站名：" + params.name);
+    res.write("\n");
+    res.write("网站 URL：" + params.url);
+    res.end();
+    // 在浏览器中访问 http://localhost:3000/user?name=菜鸟教程&url=www.runoob.com 然后查看返回结果:
+   
+    // 获取 POST 请求内容
+    // 定义res.writeHead(200, {'Content-Type': 'text/plain; charset=utf-8'});
+    
+    //获取GET请求内容
+    //由于GET请求直接被嵌入在路径中，URL是完整的请求路径，包括了?后面的部分，因此你可以手动解析后面的内容作为GET请求的参数。
+    res.end(util.inspect(url.parse(req.url, true)));
     //在浏览器中访问 http://localhost:3000/user?name=菜鸟教程&url=www.runoob.com 然后查看返回结果:
     
     // 解析 url 参数
@@ -386,3 +406,16 @@ for(var i=0; i<3; i++) {
 }
 //#endregion
 
+//#region modules
+//hello.js 
+function Hello() { 
+    var name; 
+    this.setName = function(thyName) { 
+        name = thyName; 
+    }; 
+    this.sayHello = function() { 
+        console.log('Hello ' + name); 
+    }; 
+}; 
+module.exports = Hello;
+//#endregion

@@ -1,44 +1,23 @@
-var express = require('express');
-var app = express();
-var fs = require("fs");
- 
-var bodyParser = require('body-parser');
-var multer  = require('multer');
- 
-app.use(express.static('public'));
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(multer({ dest: '/tmp/'}).array('image'));
-//获取路径
-app.get('/index.html', function (req, res) {
-   res.sendFile( __dirname + "/" + "index.html" );
-})
-//上传
-app.post('/file_upload', function (req, res) {
- 
-   console.log(req.files[0]);  // 上传的文件信息
- 
-   var des_file = __dirname + "/" + req.files[0].originalname;
-   fs.readFile( req.files[0].path, function (err, data) {
-        fs.writeFile(des_file, data, function (err) {
-         if( err ){
-              console.log( err );
-         }else{
-               response = {
-                   message:'File uploaded successfully', 
-                   filename:req.files[0].originalname
-              };
-          }
-          console.log( response );
-          res.end( JSON.stringify( response ) );
-       });
-   });
-})
- 
-var server = app.listen(8081, function () {
- 
-  var host = server.address().address
-  var port = server.address().port
- 
-  console.log("应用实例，访问地址为 http://%s:%s", host, port)
- 
-})
+//初始化http服务器
+// var HttpServer = require('./HttpServer');
+// myServer = new HttpServer();
+// myServer.express();
+
+// 初始化websocket服务器
+var webSocket = require('./WebServer');
+ws = new webSocket();
+ws.InitWebServer();
+
+// var webClient = require('./WebClient');
+// wc = new webClient();
+
+//初始化数据库
+var SQL = require('./MySqlHelp');
+mySQL = new SQL();
+// mySQL.Select('SELECT * FROM userinfo');
+
+//初始化MongoDB
+var mongoDB = require('./MongoDBHelp');
+mongo = new mongoDB();
+// mongo.test();
+// mongo.Insert();

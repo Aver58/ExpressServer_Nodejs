@@ -13,7 +13,6 @@ var options = {
    port: '8080',
    path: '/index.html'  
 };
- 
 // 处理响应的回调函数
 var callback = function(response){
    // 不断更新数据
