@@ -1,23 +1,46 @@
-//初始化http服务器
-// var HttpServer = require('./HttpServer');
-// myServer = new HttpServer();
-// myServer.express();
+var express = require('express');
+var path = require('path');
+var favicon = require('serve-favicon');
+var logger = require('morgan');
+var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
 
-// 初始化websocket服务器
-var webSocket = require('./WebServer');
-ws = new webSocket();
-ws.InitWebServer();
+var index = require('./routes/index');
+var users = require('./routes/users');
 
-// var webClient = require('./WebClient');
-// wc = new webClient();
+var app = express();
 
-//初始化数据库
-var SQL = require('./MySqlHelp');
-mySQL = new SQL();
-// mySQL.Select('SELECT * FROM userinfo');
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jade');
 
-//初始化MongoDB
-var mongoDB = require('./MongoDBHelp');
-mongo = new mongoDB();
-// mongo.test();
-// mongo.Insert();
+// uncomment after placing your favicon in /public
+//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.use('/', index);
+app.use('/users', users);
+
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  var err = new Error('Not Found');
+  err.status = 404;
+  next(err);
+});
+
+// error handler
+app.use(function(err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error');
+});
+
+module.exports = app;
