@@ -1,37 +1,50 @@
 #!/usr/bin/env node
-
+// WWW文件控制配置服务器，如 服务器错误/监听
 /**
  * Module dependencies.
  */
 
 var app = require('../app');//项目入口文件
-var log = require('../Log');
-var debug = require('debug')('nodejs:server');
+var logServer = require('../LogServer');
+var debug = require('debug')('fovserver:server');
 var http = require('http');
+var webServer = require('../WebServer');
 
+// ws = new webServer();
+// ws.InitWebServer();
+
+//#region  HTTP Server
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');//默认端口设置
-app.set('port', port);
+var port_app = normalizePort(process.env.PORT || '3000');//默认端口设置
+var port_log = normalizePort(process.env.PORT || '4000');//log端口设置
+
+app.set('port', port_app);
+app.set('port', port_log);
 
 /**
  * Create HTTP server.
  */
 
-var server = http.createServer(app);//创建一个express服务实例
+var server_app = http.createServer(app);//创建一个express服务实例
+var server_log = http.createServer(logServer);//创建一个log服务实例
 
 /**
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port);                //创建一个express服务实例
-server.on('error', onError);        //监听错误事件
-server.on('listening', onListening);
+server_app.listen(port_app);              //在port端口监听该实例
+server_app.on('error', onError);          //监听错误事件
+server_app.on('listening', onListening.bind(null,server_app));
+
+server_log.listen(port_log);              //在port端口监听该实例
+server_log.on('error', onError);          //监听错误事件
+server_log.on('listening', onListening.bind(null,server_log));
 
 /**
- * Normalize a port into a number, string, or false.
+ * port==>int
  */
 
 function normalizePort(val) {
@@ -56,6 +69,7 @@ function normalizePort(val) {
 
 function onError(error) {
   if (error.syscall !== 'listen') {
+    log.Error(error); 
     throw error;
   }
 
@@ -67,13 +81,16 @@ function onError(error) {
   switch (error.code) {
     case 'EACCES':
       console.error(bind + ' requires elevated privileges');
+      log.Error(bind + ' requires elevated privileges'); 
       process.exit(1);
       break;
     case 'EADDRINUSE':
       console.error(bind + ' is already in use');
+      log.Error(bind + ' is already in use'); 
       process.exit(1);
       break;
     default:
+      log.Error(error); 
       throw error;
   }
 }
@@ -83,9 +100,18 @@ function onError(error) {
  */
 
 function onListening() {
-  var addr = server.address();
+  var addr = server_app.address();
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
+  log.Trace('Listening on ' + bind); 
+  
 }
+//#endregion
+
+
+//log
+const log4js = require('log4js');
+var log = require("../logHelper").helper; 
+log.Info("Start Server...");  

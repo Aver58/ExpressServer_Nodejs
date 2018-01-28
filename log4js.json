@@ -1,0 +1,5 @@
+{   
+    "appenders":{ "Server": { "type": "file", "filename": "Server.log" } },
+    "categories":  { "default": { "appenders": ["Server"], "level": "trace" } }
+   
+}  
