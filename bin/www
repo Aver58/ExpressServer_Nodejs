@@ -8,6 +8,7 @@ var app = require('../app');//项目入口文件
 var logServer = require('../LogServer');
 var debug = require('debug')('fovserver:server');
 var http = require('http');
+
 var webServer = require('../WebServer');
 
 // ws = new webServer();
@@ -42,6 +43,7 @@ server_app.on('listening', onListening.bind(null,server_app));
 server_log.listen(port_log);              //在port端口监听该实例
 server_log.on('error', onError);          //监听错误事件
 server_log.on('listening', onListening.bind(null,server_log));
+
 
 /**
  * port==>int
@@ -115,3 +117,4 @@ function onListening() {
 const log4js = require('log4js');
 var log = require("../logHelper").helper; 
 log.Info("Start Server...");  
+console.log('listening on *:3000');
