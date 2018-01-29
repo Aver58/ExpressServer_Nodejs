@@ -1,13 +1,39 @@
 
 // const WebSocket = require('ws');
-// // 打开一个WebSocket:
-// var wss = new WebSocket('ws://localhost:3000/');
-// // 响应onmessage事件:
-// wss.onmessage = function(msg) { console.log(msg); };
-// if(wss.readyState == 1)
-// // 给服务器发送一个字符串:
-// wss.send('Hello!');
+// 打开一个WebSocket:
+var wss = new WebSocket('ws://localhost:3001/');
+// 响应onmessage事件:
+wss.onmessage = function(msg) { console.log(msg); };
+if(wss.readyState == 1)
+// 给服务器发送一个字符串:
+wss.send('Hello!');
 
+
+var ws = new WebSocket('ws://127.0.0.1:3000/ws');
+console.log(ws);
+var data = {
+    id: 1,
+    type: 'int',
+    user: 'aaa',
+    password: 222
+}
+ws.onopen = function() { wss.send(JSON.stringify(data)); };
+ws.onmessage=function(e){  
+    console.log('_message');  
+    console.log(e.data);  
+  };  
+  ws.onerror=function(err){  
+    console.log('_error');  
+    console.log(err);  
+  };  
+  ws.onopen=function(){  
+    console.log('_connect')  
+  };  
+  ws.onclose=function(){  
+    console.log('_close');  
+  };  
+
+  
 
 // //http
 var http = require('http');
