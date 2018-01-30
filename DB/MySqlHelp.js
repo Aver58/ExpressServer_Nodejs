@@ -1,5 +1,4 @@
 function SQL(){
-
     var mysql      = require('mysql');
     var connection = mysql.createConnection({
       host     : 'localhost',
@@ -23,7 +22,7 @@ function SQL(){
               console.log('[SELECT ERROR] - ',err.message);
               return;
             }
-        
+            
            console.log('--------------------------SELECT----------------------------');
            console.log(result);
            console.log('------------------------------------------------------------\n\n');  
@@ -88,9 +87,29 @@ function SQL(){
     }
     //验证登录
     this.Authenticator = function(data){
-        var name = data.userName;
-        var password = data.password;
-
+        var s = JSON.parse(data);
+        console.log(s.username);
+        connection.connect();
+        var name = s.username;
+        var password = s.password;
+        var  sql = 'SELECT * FROM userinfo WHERE userName = '+name;
+        connection.query(sql,function (err, result) {
+            if(err){
+              console.log('[SELECT ERROR] - ',err.message);
+              return;
+            }
+            if(result!=null){
+                console.log('--------------------------SELECT----------------------------');
+                console.log(result);
+                console.log('------------------------------------------------------------\n\n');  
+                if(password == result[0].password){
+                    console.log('===');
+                    return '1';
+                }
+                return 0;
+            }
+            return 0;
+        });
     }
 }
 module.exports = SQL;

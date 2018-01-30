@@ -8,6 +8,8 @@ if(wss.readyState == 1)
 // 给服务器发送一个字符串:
 wss.send('Hello!');
 
+SocketManager.Instance.send(1,{"username":1, "password":1});
+
 
 var ws = new WebSocket('ws://127.0.0.1:3000/ws');
 console.log(ws);

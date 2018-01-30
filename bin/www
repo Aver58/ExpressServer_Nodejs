@@ -5,7 +5,6 @@
  */
 
 var app = require('../app');//项目入口文件
-var logServer = require('../LogServer');
 var debug = require('debug')('fovserver:server');
 var http = require('http');
 
@@ -115,7 +114,6 @@ function onListening() {
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
   log.Trace('Listening on ' + bind); 
-  
 }
 //#endregion
 
