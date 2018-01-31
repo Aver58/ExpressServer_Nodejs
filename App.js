@@ -1,26 +1,17 @@
+// 加载依赖库，原来这个类库都封装在connect中，现在需地注单独加载
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
+// 加载路由控制
 var index = require('./routes/index');
 var users = require('./routes/users');
-
+// 创建项目实例
 var app = express();
 
-//#region 消息handler
-var Login = require('./GameServer/Handler/LoginHandler');
-login = new Login();
-
-var handlers = new Array(50);
-
-handlers = {
-	1: login
-}
-
-//#endregion
+var handlers = require('./GameServer/Handler/Handlers');//处理器们
 
 //访问返回index.html
 app.get('/', function (req, res) {
@@ -38,37 +29,46 @@ const wss = new WebSocketServer({
 	port: 3001,
 	// server: server   //把WebSocketServer绑定到同一个端口 
 });
-console.log('WebSocket Server listening on *:3001');
+console.log('WebSocket Server listening on * : '+wss.port);
 
 //连接上
 wss.on('connection', function (ws) {
 	console.log(`[SERVER] connection()`);
-	//   console.log(ws);
 
 	//收到消息
 	ws.on('message', function (message) {
 		console.log(`[SERVER] Received: ${message}`);
-		msgCode = message.substring(0,1);
-		msgBody = message.substring(1);
+		msgCode = parseInt(message.substring(0,6));
+		msgBody = message.substring(6);
 		//让子处理器去处理
-		var Handler = null;
-		Object.keys(handlers).forEach(function(key){
-			if (key = msgCode) {
-				Handler = handlers[key];
+		// po = new Promise();
+		new Promise((resolve,reject)=>{
+			var Handler = null;
+			Object.keys(handlers).forEach(function(key){
+				if (key = msgCode) {
+					Handler = handlers[key];
+				}
+			   });
+			if (Handler === null) {
+				wss.broadcast("no handler");
+			} else {
+				
+				wss.handleMessage(Handler,msgBody);
+				console.log('Handler');
+				console.log(Handler);
 			}
-	   });
-		if (Handler === null) {
-			wss.broadcast("no handler");
-		} else {
-			var res = Handler.Execute(msgBody);
-			console.log('res');
-			console.log(res);
-			wss.broadcast(res);
-		}
-		//   let msg = createMessage('chat', this.user, message);
-		//   wss.broadcast(msg);
+		})
 	})
 });
+wss.handleMessage = async function(handler,data){
+	console.log('handler');
+	console.log(handler);
+	
+	var res = await handler.Execute(data);
+	console.log('res');
+	console.log(res);
+	wss.broadcast(res);
+}
 
 //广播信息
 wss.broadcast = function (data) {
@@ -107,18 +107,18 @@ function createMessage(type, user, data) {
 // })  
 //#endregion
 
-// view engine setup
+// 定义EJS模板引擎和模板文件位置，也可以使用jade或其他模型引擎
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 // uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
-app.use(bodyParser.json());
+app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use(logger('dev'));// 定义日志和输出级别
+app.use(bodyParser.json());// 定义数据解析器
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
-
+app.use(cookieParser());// 定义cookie解析器	
+app.use(express.static(path.join(__dirname, 'public')));// 定义静态文件目录
+// 匹配路径和路由
 app.use('/', index);
 app.use('/users', users);
 

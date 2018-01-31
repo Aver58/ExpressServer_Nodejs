@@ -1,17 +1,27 @@
 //处理登陆信息
 function Login (){
-    var SQL = require('/Users/Administrator/Documents/GitHub/Nodejs/DB/MySqlHelp')
+    var SQL = require('../MySqlHelp')
     sql = new SQL();
-
+    // var mongoDB = require('../MongoDBHelp')
+    // mongo = new mongoDB();
+    // var redis = require('../RedisHelp')
+  
     this.Code = 1;
-
     this.Execute = async function(message){
-        isPass = await sql.Authenticator(message);//传不出参数
-        console.log('ispass'+isPass);
-        if(isPass == '1'){
-            return message;
-        }else{
-            return "没有该用户！";
+       
+        var isPass = await sql.Authenticator(message);//这个异步暂时搞不定，先放着：传不出参数
+        console.log('ispass');
+        console.log(isPass);
+        var ret = {};
+        if(1){
+
+            ret = JSON.stringify(000002,{ret:"true",message})
+            return ret;
+        }
+        else
+        {  
+            ret = JSON.stringify(000002,{ret:"false",message:"没有该用户！"})
+            return ret;
         }
     }
 }

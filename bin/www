@@ -52,7 +52,7 @@ server_app.on('listening', onListening.bind(null,server_app));
 
 
 /**
- * port==>int
+ * 端口标准化函数  port==>int
  */
 
 function normalizePort(val) {
@@ -72,7 +72,7 @@ function normalizePort(val) {
 }
 
 /**
- * Event listener for HTTP server "error" event.
+ * HTTP异常事件处理函数Event listener for HTTP server "error" event.
  */
 
 function onError(error) {
