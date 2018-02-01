@@ -134,17 +134,19 @@ function SQL(){
               return;
             }
             if(result != null){
-                console.log('--------------------------SELECT----------------------------');
-                console.log(result);
-                console.log('------------------------------------------------------------\n\n');  
+                // console.log('--------------------------SELECT----------------------------');
+                // console.log(result);
+                // console.log('------------------------------------------------------------\n\n');  
                 if(password == result[0].password){
-                    return new Promise((resolve,reject)=>{
-                        resolve(true);
-                    })
+                    console.log("pass");
+                    // return new Promise((resolve,reject)=>{
+                    //     resolve(true);
+                    // })
+                    return 1;
                 }
-                return false;
+                return 2;
             }
-            return false;
+            return 3;
         });
     }
     

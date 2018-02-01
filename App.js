@@ -41,39 +41,40 @@ wss.on('connection', function (ws) {
 		msgCode = parseInt(message.substring(0,6));
 		msgBody = message.substring(6);
 		//让子处理器去处理
-		// po = new Promise();
-		new Promise((resolve,reject)=>{
-			var Handler = null;
-			Object.keys(handlers).forEach(function(key){
-				if (key = msgCode) {
-					Handler = handlers[key];
-				}
-			   });
-			if (Handler === null) {
-				wss.broadcast("no handler");
-			} else {
-				
-				wss.handleMessage(Handler,msgBody);
-				console.log('Handler');
-				console.log(Handler);
+
+		var Handler = null;
+		Object.keys(handlers).forEach(function(key){
+			if (key = msgCode) {
+				Handler = handlers[key];
 			}
-		})
+		   });
+		if (Handler === null) {
+			wss.broadcast("no handler");
+		} else {
+			// ret = new Promise((resolve,reject)=>{
+			var res = Handler.Execute(msgBody);
+			console.log(res);
+			wss.broadcast(res);
+			
+		}
 	})
 });
-wss.handleMessage = async function(handler,data){
-	console.log('handler');
-	console.log(handler);
+// wss.handleMessage = async function(handler,data){
+// 	console.log('handler');
+// 	console.log(handler);
 	
-	var res = await handler.Execute(data);
-	console.log('res');
-	console.log(res);
-	wss.broadcast(res);
-}
+// 	var res = await handler.Execute(data);
+// 	console.log('res');
+// 	console.log(res);
+// 	wss.broadcast(res);
+// }
 
 //广播信息
 wss.broadcast = function (data) {
 	wss.clients.forEach(function (client) {
-		client.send(`ECHO: ${data}`, (err) => {
+		// client.send(`${data}`, (err) => {
+			
+		client.send(data, (err) => {
 			if (err) {
 				console.log(`[SERVER] error: ${err}`);
 			}

@@ -1,3 +1,4 @@
+
 //处理登陆信息
 function Login (){
     var SQL = require('../MySqlHelp')
@@ -7,21 +8,24 @@ function Login (){
     // var redis = require('../RedisHelp')
   
     this.Code = 1;
-    this.Execute = async function(message){
+    this.retCode = ['000002']
+    this.Execute =  function(message){
        
-        var isPass = await sql.Authenticator(message);//这个异步暂时搞不定，先放着：传不出参数
+        var isPass =  sql.Authenticator(message);//这个异步暂时搞不定，先放着：传不出参数
         console.log('ispass');
         console.log(isPass);
-        var ret = {};
+        // var ret = {};
         if(1){
-
-            ret = JSON.stringify(000002,{ret:"true",message})
-            return ret;
+            identify = Math.random()*100000000;
+            ret = JSON.stringify({ret:"true",message,id:identify})
+            // console.log(this.retCode+ret);
+            return this.retCode+ret;
         }
         else
         {  
-            ret = JSON.stringify(000002,{ret:"false",message:"没有该用户！"})
-            return ret;
+            ret = JSON.stringify({ret:"false",message:"没有该用户！"})
+            // console.log(this.retCode+ret);
+            return this.retCode+ret;
         }
     }
 }
